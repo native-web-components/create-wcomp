@@ -1,4 +1,5 @@
-class WebComponent extends HTMLElement {
+import styles from "./styles.scss?inline";
+class BaseComponent extends HTMLElement {
   static get observedAttributes() {
     return [];
   }
@@ -33,6 +34,18 @@ class WebComponent extends HTMLElement {
 
   render() {
     this.shadowRoot!.innerHTML = `<div>Your Web Component is {{projectName}}</div>`;
+  }
+
+  injectStyles() {
+    const style = document.createElement("style");
+    style.textContent = `${styles}`;
+    this.shadowRoot!.appendChild(style);
+  }
+}
+
+class WebComponent extends BaseComponent {
+  constructor() {
+    super();
   }
 }
 
