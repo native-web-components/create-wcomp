@@ -8,7 +8,7 @@ async function init() {
 
   // console.log("projectPath", projectPath);
   copyAndReplaceInDirectory(path.join(__dirname, "template"), projectPath, {
-    "{{projectName}}": projectName,
+    "PROJECT_NAME": projectName,
   });
   console.log("finish create project name:", projectName);
 }

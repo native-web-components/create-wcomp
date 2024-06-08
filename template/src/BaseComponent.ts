@@ -33,7 +33,8 @@ class BaseComponent extends HTMLElement {
   // }
 
   render() {
-    this.shadowRoot!.innerHTML = `<div>Your Web Component is {{projectName}}</div>`;
+    this.shadowRoot!.innerHTML = ``;
+    this.injectStyles();
   }
 
   injectStyles() {
@@ -43,10 +44,4 @@ class BaseComponent extends HTMLElement {
   }
 }
 
-class WebComponent extends BaseComponent {
-  constructor() {
-    super();
-  }
-}
-
-customElements.define("{{projectName}}", WebComponent);
+export default BaseComponent;
