@@ -17,3 +17,4 @@ const define = (name: string, options?: ElementDefinitionOptions) => {
 };
 
 export { define };
+export default WebComponent;

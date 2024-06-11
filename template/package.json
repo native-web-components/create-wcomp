@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "types": "./dist/PROJECT_NAME.d.ts",
   "exports": {
     ".": {
       "import": "./dist/PROJECT_NAME.js",
       "require": "./dist/PROJECT_NAME.umd.js"
     }
-  },
+  }, 
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
