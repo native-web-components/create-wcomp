@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "types": "./dist/PROJECT_NAME.d.ts",
+  "main": "./dist/PROJECT_NAME.es.js",
   "exports": {
     ".": {
-      "import": "./dist/PROJECT_NAME.js",
+      "import": "./dist/PROJECT_NAME.es.js",
       "require": "./dist/PROJECT_NAME.umd.js"
     }
-  }, 
+  },
   "scripts": {
     "dev": "vite",
     "build:example": "tsc && vite build",
