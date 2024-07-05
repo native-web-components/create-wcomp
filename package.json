@@ -1,6 +1,6 @@
 {
   "name": "create-wcomp",
-  "version": "0.0.0-alpha.5",
+  "version": "0.0.0-alpha.7",
   "description": "create web components",
   "main": "index.js",
   "bin": {
@@ -11,7 +11,7 @@
   },
   "files": [
     "index.js",
-    "template-*"
+    "template/*"
   ],
   "repository": {
     "type": "git",

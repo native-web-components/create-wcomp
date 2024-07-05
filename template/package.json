@@ -1,6 +1,9 @@
 {
   "name": "PROJECT_NAME",
+  "author": "",
+  "description": "",
   "private": true,
+  "license": "MIT",
   "version": "0.0.0",
   "type": "module",
   "types": "./dist/PROJECT_NAME.d.ts",
@@ -16,7 +19,8 @@
     "build:example": "tsc && vite build",
     "build:lib": "tsc && vite build --config ./vite-lib.config.js",
     "build": "npm run build:lib && npm run build:example",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "npm run build && node ./bin/release.js"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
