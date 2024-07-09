@@ -16,6 +16,15 @@ class BaseComponent extends HTMLElement {
     this.render();
   }
 
+  set<K extends keyof this>(key: K, value: this[K]) {
+    this[key] = value;
+    this.render();
+  }
+
+  get<K extends keyof this>(key: K) {
+    return this[key];
+  }
+
   // disconnectedCallback() {
   //   console.log("disconnectedCallback when Custom element removed from page.");
   // }
