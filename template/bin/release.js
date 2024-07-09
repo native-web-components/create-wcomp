@@ -1,8 +1,11 @@
 import path from "path";
 import fs from "fs";
 import stream from "stream";
-import archiver from "archiver";
+import { blob } from "node:stream/consumers";
 import { fileURLToPath } from "url";
+import readline from "readline";
+import archiver from "archiver";
+import axios from "axios";
 
 // 获取当前文件夹路径
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +29,11 @@ function getAllFiles(dirPath, arrayOfFiles = []) {
   return arrayOfFiles;
 }
 function filterFiles(files) {
-  const shouldIncludes = [`${projectName}/dist`, `${projectName}/package.json`, `${projectName}/README.md`];
+  const shouldIncludes = [
+    `${projectName}/dist`,
+    `${projectName}/package.json`,
+    `${projectName}/README.md`,
+  ];
   const shouldNotIncludes = ["node_modules", ".git"];
   return files.filter((file) => {
     let isMatch = false;
@@ -49,7 +56,7 @@ function filterFiles(files) {
 async function compressFiles() {
   const passThroughStream = new stream.PassThrough();
   const files = filterFiles(getAllFiles(projectPath));
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const archive = archiver("zip", {
       zlib: { level: 9 },
     });
@@ -64,28 +71,54 @@ async function compressFiles() {
       archive.file(file, { name: file.replace(`${projectPath}/`, "") });
     });
     archive.finalize();
+    resolve(passThroughStream);
+  });
+}
+
+function getApiToken() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question("Enter your api token: ", (answer) => {
+      rl.close();
+      resolve(answer);
+    });
   });
 }
 
 async function release() {
   const passThroughStream = await compressFiles();
   const writeStream = new fs.createWriteStream("release.zip");
-  passThroughStream.pipe(writeStream);
-  writeStream.on("finish", () => {
-    console.log("The file is saved!");
+  await new Promise((resolve) => {
+    passThroughStream.pipe(writeStream);
+    writeStream.on("finish", () => {
+      console.log("The file is saved!");
+      resolve();
+    });
   });
-
-  // const { data: rData } = await axios.post(
-  //   "http://localhost:3000/release",
-  //   passThroughStream,
-  //   {
-  //     headers: {
-  //       "Content-Type": "application/octet-stream",
-  //     },
-  //     maxContentLength: Infinity,
-  //     maxBodyLength: Infinity,
-  //   }
-  // );
-  // console.log(123, rData);
+  const formData = new FormData();
+  formData.append("file", await blob(fs.createReadStream("release.zip")), {
+    filename: "release.zip",
+  });
+  try {
+    const apiToken = await getApiToken();
+    const { data: rData } = await axios.post(
+      "https://wcomp.zezeping.com/api/components/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Cookie: `api-token=${apiToken}`,
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+      }
+    );
+    console.info("release success");
+  } catch (error) {
+    console.error(error.response.data);
+  }
 }
 release();
